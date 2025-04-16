@@ -21,10 +21,16 @@ interface Document {
   [key: string]: any; // For additional fields
 }
 
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export default function Home() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   // Memoized fetch function
   const fetchDocumentsPage = useCallback(async (page = 0, pageSize = 10) => {
@@ -57,7 +63,7 @@ export default function Home() {
   useEffect(() => {
     fetchDocumentsPage();
   }, [fetchDocumentsPage]);
-  console.log(documents);
+
   return (
     <main className="h-screen flex flex-col overflow-hidden">
       <Header />
@@ -74,15 +80,15 @@ export default function Home() {
         </div>
       </div>
       <div className="absolute bottom-4 right-5">
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="h-10 w-10 mr-2">
               <FaRobot className="text-2xl" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" forceMount>
             <DropdownMenuItem asChild>
-              <ChatInterface />
+              <ChatInterface messages={chatMessages} setMessages={setChatMessages} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

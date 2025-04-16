@@ -6,8 +6,12 @@ interface Message {
   content: string;
 }
 
-export default function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([]);
+interface ChatInterfaceProps {
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}
+
+export default function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +56,7 @@ export default function ChatInterface() {
 
       const data = await response.text();
       console.log("Response data:", data);
+    
       setMessages((prev) => [...prev, { role: "assistant", content: data }]);
     } catch (error) {
       console.error("Error details:", error);
@@ -60,7 +65,7 @@ export default function ChatInterface() {
       setIsLoading(false);
     }
   };
-
+console.log(messages);
   return (
     <div className="flex flex-col w-[400px] h-[60vh] mx-auto p-2 mr-2 ">
       <h2 className="text-center border-b">Chat with your documents</h2>
