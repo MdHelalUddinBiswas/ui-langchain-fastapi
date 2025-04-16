@@ -32,12 +32,14 @@ export default function ChatInterface() {
     console.log(userMessage);
     try {
       console.log(
-        `Sending request to: http://127.0.0.1:8000/chat/?msg=${encodeURIComponent(
-          userMessage
-        )}`
+        `Sending request to: ${
+          process.env.NEXT_PUBLIC_ANALYTICS_ID
+        }/chat/?msg=${encodeURIComponent(userMessage)}`
       );
       const response = await fetch(
-        `http://127.0.0.1:8000/chat/?msg=${encodeURIComponent(userMessage)}`,
+        `${process.env.NEXT_PUBLIC_ANALYTICS_ID}/chat/?msg=${encodeURIComponent(
+          userMessage
+        )}`,
         {
           method: "POST",
         }
@@ -61,7 +63,7 @@ export default function ChatInterface() {
 
   return (
     <div className="flex flex-col w-[400px] h-[60vh] mx-auto p-2 mr-2 ">
-        <h2 className="text-center border-b">Chat with your documents</h2>
+      <h2 className="text-center border-b">Chat with your documents</h2>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div

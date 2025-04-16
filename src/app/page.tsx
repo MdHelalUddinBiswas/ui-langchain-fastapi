@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChartBar } from "lucide-react";
+import Card from "@/components/Card";
+import { FaRobot } from "react-icons/fa";
 
 // Define document type for better TypeScript support
 interface Document {
@@ -31,7 +33,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/get-documents/?skip=${skip}&limit=${pageSize}`
+        `${process.env.NEXT_PUBLIC_ANALYTICS_ID}/get-documents/?skip=${skip}&limit=${pageSize}`
       );
 
       if (!response.ok) {
@@ -54,7 +56,7 @@ export default function Home() {
   useEffect(() => {
     fetchDocumentsPage();
   }, [fetchDocumentsPage]);
-console.log(documents);
+  console.log(documents);
   return (
     <main className="h-screen flex flex-col overflow-hidden">
       <Header />
@@ -64,24 +66,18 @@ console.log(documents);
         {documents.length === 0 && !isLoading && !error && (
           <p>No documents found.</p>
         )}
-        {documents.map((document) => (
-          <div
-            key={document.id}
-            className="p-4 border rounded-md shadow-sm"
-          >
-            <h3 className="text-lg font-medium">{document.page_content}</h3>
-            <p className="text-gray-500">{document?.name}</p>
-          </div>
+        {documents.map((document, index) => (
+          <Card key={index} document={document} />
         ))}
       </div>
-      <div className="absolute bottom-3 right-4">
+      <div className="absolute bottom-4 right-5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <ChartBar className="h-5 w-5" />
+            <Button variant="outline" size="icon" className="h-10 w-10">
+              <FaRobot className="text-2xl" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" >
+          <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
               <ChatInterface />
             </DropdownMenuItem>
