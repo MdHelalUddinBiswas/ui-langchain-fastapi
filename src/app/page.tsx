@@ -9,9 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChartBar } from "lucide-react";
 import Card from "@/components/Card";
 import { FaRobot } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
+import AddData from "@/components/AddData";
 
 // Define document type for better TypeScript support
 interface Document {
@@ -60,26 +61,41 @@ export default function Home() {
   return (
     <main className="h-screen flex flex-col overflow-hidden">
       <Header />
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4">
         {isLoading && <p>Loading documents...</p>}
         {error && <p className="text-red-500">{error}</p>}
         {documents.length === 0 && !isLoading && !error && (
           <p>No documents found.</p>
         )}
-        {documents.map((document, index) => (
-          <Card key={index} document={document} />
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {documents.map((document, index) => (
+            <Card key={index} document={document} />
+          ))}
+        </div>
       </div>
       <div className="absolute bottom-4 right-5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button variant="outline" size="icon" className="h-10 w-10 mr-2">
               <FaRobot className="text-2xl" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
               <ChatInterface />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon" className="h-10 w-10">
+              <FaPlus className="text-xl" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <AddData />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
