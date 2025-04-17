@@ -9,9 +9,16 @@ interface Message {
 interface ChatInterfaceProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  setSessionId: React.Dispatch<React.SetStateAction<number>>;
+  sessionId: number;
 }
 
-export default function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
+export default function ChatInterface({
+  messages,
+  setMessages,
+  setSessionId,
+  sessionId,
+}: ChatInterfaceProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,31 +39,35 @@ export default function ChatInterface({ messages, setMessages }: ChatInterfacePr
     const userMessage = input.trim();
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+
+    if (messages?.length === 0) {
+      setSessionId(() => Math.floor(Math.random() * 100));
+      console.log(sessionId);
+    }
     setIsLoading(true);
-    console.log(userMessage);
+
     try {
       console.log(
         `Sending request to: ${
           process.env.NEXT_PUBLIC_ANALYTICS_ID
-        }/chat/?msg=${encodeURIComponent(userMessage)}`
+        }/chat/?msg=${encodeURIComponent(userMessage)}?session_id=${sessionId}`
       );
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_ANALYTICS_ID}/chat/?msg=${encodeURIComponent(
           userMessage
-        )}`,
+        )}&session_id=${sessionId}`,
         {
           method: "POST",
         }
       );
 
-      console.log("Response status:", response.status);
       if (!response.ok) {
         throw new Error(`Server responded with ${response.status}`);
       }
 
       const data = await response.text();
       console.log("Response data:", data);
-    
+
       setMessages((prev) => [...prev, { role: "assistant", content: data }]);
     } catch (error) {
       console.error("Error details:", error);
@@ -65,7 +76,7 @@ export default function ChatInterface({ messages, setMessages }: ChatInterfacePr
       setIsLoading(false);
     }
   };
-console.log(messages);
+
   return (
     <div className="flex flex-col w-[400px] h-[60vh] mx-auto p-2 mr-2 ">
       <h2 className="text-center border-b">Chat with your documents</h2>

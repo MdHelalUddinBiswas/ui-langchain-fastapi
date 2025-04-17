@@ -31,7 +31,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-
+  const [sessionId, setSessionId] = useState(1);
   // Memoized fetch function
   const fetchDocumentsPage = useCallback(async (page = 0, pageSize = 10) => {
     setIsLoading(true);
@@ -88,7 +88,12 @@ export default function Home() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" forceMount>
             <DropdownMenuItem asChild>
-              <ChatInterface messages={chatMessages} setMessages={setChatMessages} />
+              <ChatInterface
+                messages={chatMessages}
+                setMessages={setChatMessages}
+                setSessionId={setSessionId}
+                sessionId={sessionId}
+              />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
